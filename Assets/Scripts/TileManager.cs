@@ -46,15 +46,19 @@ public class TileManager : MonoBehaviour {
 		{
 			Tile tile = transform.GetComponent<Tile>();
 			m_tileGraph.AddNode(tile.TileID.ToString(), transform);
+            AddNeighborsToTile(transform);
+
 		}
 	}
 
-	private void AddNeighborsToTiles()
+	private void AddNeighborsToTile(Transform tile)
 	{
-		for(int i = 1; i < m_numOfAddedTiles; i++)
-		{
-			m_tileGraph.AddUndirectedEdge(i.ToString(), (i+1).ToString()); 
-		}
+		//for(int i = 1; i < m_numOfAddedTiles; i++)
+		//{
+		//	m_tileGraph.AddUndirectedEdge(i.ToString(), (i+1).ToString()); 
+		//}
+
+
 	}
 	
 	public List<string> GetAllValidTilesWithinNoOfStepsFromTile(Tile fromTile, int steps)

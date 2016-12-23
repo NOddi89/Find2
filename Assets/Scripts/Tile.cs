@@ -5,6 +5,7 @@ public class Tile : MonoBehaviour
 {
 
 	public int m_TileId = -1;
+    public Transform[] neighborTiles;
 
 	private Vector3 m_TilePlayerPos;
 	private Collider m_Collider;
@@ -26,5 +27,10 @@ public class Tile : MonoBehaviour
 	{
 		return m_TilePlayerPos;
 	}
+
+    public Transform[] GetNeighborTiles()
+    {
+        return neighborTiles;
+    }
 
 }
