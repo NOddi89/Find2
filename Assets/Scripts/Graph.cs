@@ -292,14 +292,69 @@ public class Graph
 	}
 
 
-    public List<string> Djikstra(Node start, Node goal)
+    public List<string> ConstructPath(Node start, Node goal)
     {
-        IntervalHeap<Node> frontier = new IntervalHeap<Node>();
+        Queue<Node> frontier = new Queue<Node>();
+        //List<string> cameFrom = new List<string>();
+        Dictionary<string, Node> cameFrom = new Dictionary<string, Node>();
+        bool goalReached = false;
+        Node current;
+        frontier.Enqueue(start);
+        //cameFrom.Add(start.Key, new Node("0", "0"));
         
+        while(frontier.Count > 0 && !goalReached)
+        {
+            current = frontier.Dequeue();
+            Debug.Log("1. Current: " + current.Key);
+
+            Debug.Log("2. Current == goal = " + (current.Key == goal.Key));
+            if (current.Key == goal.Key)
+            {
+                goalReached = true;
+            }
+            else
+            {
+                foreach(EdgeToNeighbor edge in current.Neighbors)
+                {
+                    Debug.Log("3. Edge: " + edge.Neighbor.Key);
+
+                    Debug.Log("4. Edge in cameFrom? " + cameFrom.ContainsKey(edge.Neighbor.Key));
+                    if (!cameFrom.ContainsKey(edge.Neighbor.Key)) 
+                    {
+                        frontier.Enqueue(edge.Neighbor);
+                        cameFrom.Add(edge.Neighbor.Key, current);
+                        Debug.Log(edge.Neighbor.Key + " came from " + current.Key);
+                    }
+                }
+            }
+        }
 
 
+        //Debug.Log("Cameform:");
+        //foreach(System.Collections.Generic.KeyValuePair<string, Node> kvp in cameFrom)
+        //{
+        //    Debug.Log(String.Format("{0} came from {1}", kvp.Key, kvp.Value.Key));
+        //}
 
-        return new List<string> { "dummy" };
+
+        Debug.Log("Constructing path:::::");
+        current = goal;
+
+        Debug.Log("1. Current = " + current.Key);
+
+        List<String> path = new List<string>();
+        path.Add(current.Key);
+
+        while (current.Key != start.Key)
+        {
+            current = cameFrom[current.Key];
+            Debug.Log("2. Current = " + current.Key);
+            path.Add(current.Key);
+        }
+
+        path.Reverse();
+
+        return path;
     }
 
 	#endregion

@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public class TileManager : MonoBehaviour {
 
-	public Transform m_Tiles;
+	public Transform m_tiles;
 
-	private Graph tileGraph = new Graph();
-	private int numOfAddedTiles = 0;
+	private Graph m_tileGraph = new Graph();
+	private int m_numOfAddedTiles = 0;
 
 	// Use this for initialization
 	void Awake () 
@@ -15,7 +15,7 @@ public class TileManager : MonoBehaviour {
 		SetTileIDs();
 		AddTilesToGraph();
 
-		if(numOfAddedTiles > 1)
+		if(m_numOfAddedTiles > 1)
 		{
 			AddNeighborsToTiles();
 		}
@@ -27,7 +27,7 @@ public class TileManager : MonoBehaviour {
 	{
 		int id = 0;
 
-		foreach(Transform transform in m_Tiles)
+		foreach(Transform transform in m_tiles)
 		{
 			id++;
 			Tile tile = transform.GetComponent<Tile>();
@@ -36,29 +36,42 @@ public class TileManager : MonoBehaviour {
 
 		if( id != 0)
 		{
-			numOfAddedTiles = id;
+			m_numOfAddedTiles = id;
 		}
 	}
 
 	private void AddTilesToGraph()
 	{
-		foreach(Transform transform in m_Tiles)
+		foreach(Transform transform in m_tiles)
 		{
 			Tile tile = transform.GetComponent<Tile>();
-			tileGraph.AddNode(tile.TileID.ToString(), transform);
+			m_tileGraph.AddNode(tile.TileID.ToString(), transform);
 		}
 	}
 
 	private void AddNeighborsToTiles()
 	{
-		for(int i = 1; i < numOfAddedTiles; i++)
+		for(int i = 1; i < m_numOfAddedTiles; i++)
 		{
-			tileGraph.AddUndirectedEdge(i.ToString(), (i+1).ToString()); 
+			m_tileGraph.AddUndirectedEdge(i.ToString(), (i+1).ToString()); 
 		}
 	}
 	
 	public List<string> GetAllValidTilesWithinNoOfStepsFromTile(Tile fromTile, int steps)
 	{
-		return tileGraph.GetTileIDsNumOfStepFromNode(tileGraph.Nodes[fromTile.m_TileId.ToString()], steps);
+		return m_tileGraph.GetTileIDsNumOfStepFromNode(m_tileGraph.Nodes[fromTile.m_TileId.ToString()], steps);
 	}
+
+    public List<string> GetPathBetweenTiles(Tile start, Tile goal)
+    {
+        return m_tileGraph.ConstructPath(m_tileGraph.Nodes[start.m_TileId.ToString()], m_tileGraph.Nodes[goal.m_TileId.ToString()]);
+    }
+
+    public Tile GetTile(string tileId)
+    {
+        int id;
+        System.Int32.TryParse(tileId, out id);
+
+        return m_tiles.GetChild(id - 1).GetComponent<Tile>();
+    }
 }
