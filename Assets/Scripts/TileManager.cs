@@ -14,11 +14,11 @@ public class TileManager : MonoBehaviour {
 	{
 		SetTileIDs();
 		AddTilesToGraph();
-
-		if(m_numOfAddedTiles > 1)
-		{
-			AddNeighborsToTiles();
-		}
+        AddNeighborsToTiles(m_tiles);
+		//if(m_numOfAddedTiles > 1)
+		//{
+		//	AddNeighborsToTiles();
+		//}
 
 		//tileGraph.GetTileIDsNumOfStepFromNode(tileGraph.Nodes["4"], 2);
 	}
@@ -45,20 +45,30 @@ public class TileManager : MonoBehaviour {
 		foreach(Transform transform in m_tiles)
 		{
 			Tile tile = transform.GetComponent<Tile>();
+            Debug.Log("Adding tile " + tile.TileID + " to graph");
 			m_tileGraph.AddNode(tile.TileID.ToString(), transform);
-            AddNeighborsToTile(transform);
 
 		}
 	}
 
-	private void AddNeighborsToTile(Transform tile)
+	private void AddNeighborsToTiles(Transform tiles)
 	{
 		//for(int i = 1; i < m_numOfAddedTiles; i++)
 		//{
 		//	m_tileGraph.AddUndirectedEdge(i.ToString(), (i+1).ToString()); 
 		//}
+        
+        foreach(Transform tile in tiles)
+        {
+            Transform[] neighbors = tile.GetComponent<Tile>().GetNeighborTiles();
 
-
+            foreach(Transform t in neighbors)
+            {
+                Tile neighbor = t.GetComponent<Tile>();
+                Debug.Log("Adding edge between " + tile.GetComponent<Tile>().TileID + " to " + neighbor.TileID);
+                m_tileGraph.AddUndirectedEdge(tile.GetComponent<Tile>().TileID.ToString(), neighbor.TileID.ToString());
+            } 
+        }
 	}
 	
 	public List<string> GetAllValidTilesWithinNoOfStepsFromTile(Tile fromTile, int steps)
