@@ -15,14 +15,11 @@ public class TileManager : MonoBehaviour {
 		SetTileIDs();
 		AddTilesToGraph();
         AddNeighborsToTiles(m_tiles);
-		//if(m_numOfAddedTiles > 1)
-		//{
-		//	AddNeighborsToTiles();
-		//}
-
-		//tileGraph.GetTileIDsNumOfStepFromNode(tileGraph.Nodes["4"], 2);
 	}
 	
+    /// <summary>
+    /// Goes through all tiles asign to m_tiles and setting a ID.
+    /// </summary>
 	private void SetTileIDs()
 	{
 		int id = 0;
@@ -40,6 +37,10 @@ public class TileManager : MonoBehaviour {
 		}
 	}
 
+    /// <summary>
+    /// Step one of createing a graph. This method adding a node to the grap
+    /// for each tile in m_tiles.
+    /// </summary>
 	private void AddTilesToGraph()
 	{
 		foreach(Transform transform in m_tiles)
@@ -51,16 +52,17 @@ public class TileManager : MonoBehaviour {
 		}
 	}
 
+    /// <summary>
+    /// Step two of creating a graph. This function is checking each neighbor
+    /// in tiles, and then adding an undirected edge between the tile and every
+    /// neighbor.
+    /// </summary>
+    /// <param name="tiles"></param>
 	private void AddNeighborsToTiles(Transform tiles)
-	{
-		//for(int i = 1; i < m_numOfAddedTiles; i++)
-		//{
-		//	m_tileGraph.AddUndirectedEdge(i.ToString(), (i+1).ToString()); 
-		//}
-        
+	{     
         foreach(Transform tile in tiles)
         {
-            Transform[] neighbors = tile.GetComponent<Tile>().GetNeighborTiles();
+            Transform[] neighbors = tile.GetComponent<Tile>().NeighborTiles;
 
             foreach(Transform t in neighbors)
             {
@@ -71,16 +73,35 @@ public class TileManager : MonoBehaviour {
         }
 	}
 	
+    /// <summary>
+    /// Returning a list of tiles id's that is clickable a number of steps away in every direction from
+    /// where the player is standing.
+    /// </summary>
+    /// <param name="fromTile"></param>
+    /// <param name="steps"></param>
+    /// <returns></returns>
 	public List<string> GetAllValidTilesWithinNoOfStepsFromTile(Tile fromTile, int steps)
 	{
-		return m_tileGraph.GetTileIDsNumOfStepFromNode(m_tileGraph.Nodes[fromTile.m_TileId.ToString()], steps);
+		return m_tileGraph.GetTileIDsNumOfStepFromNode(m_tileGraph.Nodes[fromTile.TileID.ToString()], steps);
 	}
 
+    /// <summary>
+    /// Returning a list of tile id's that is showing the path where the player need to go
+    /// to get from start to goal tile.
+    /// </summary>
+    /// <param name="start"></param>
+    /// <param name="goal"></param>
+    /// <returns></returns>
     public List<string> GetPathBetweenTiles(Tile start, Tile goal)
     {
-        return m_tileGraph.ConstructPath(m_tileGraph.Nodes[start.m_TileId.ToString()], m_tileGraph.Nodes[goal.m_TileId.ToString()]);
+        return m_tileGraph.ConstructPath(m_tileGraph.Nodes[start.TileID.ToString()], m_tileGraph.Nodes[goal.TileID.ToString()]);
     }
 
+    /// <summary>
+    /// Returning a tile with a spesific id.
+    /// </summary>
+    /// <param name="tileId"></param>
+    /// <returns></returns>
     public Tile GetTile(string tileId)
     {
         int id;

@@ -10,7 +10,6 @@ public class PlayerMovement : MonoBehaviour {
 	public int m_steps = 1;
 
 	private Transform m_Transform;
-	private Vector3 m_newPosition;
 	private bool m_isMoveing;
 	private Tile m_currentTile;
 	private TileManager m_tileManagerScript;
@@ -32,7 +31,7 @@ public class PlayerMovement : MonoBehaviour {
 	{
 		m_currentTile = m_SpawnPoint.GetComponent<Tile>();
 
-		transform.position = m_currentTile.GetTilePlayerPos();
+		transform.position = m_currentTile.TilePlayerPos;
 	}
 	
 	// Update is called once per frame
@@ -85,7 +84,7 @@ public class PlayerMovement : MonoBehaviour {
 
     private IEnumerator moveToTile(Tile destination)
     {
-        Vector3 newPos = destination.GetTilePlayerPos();
+        Vector3 newPos = destination.TilePlayerPos;
         Vector3 startPos = transform.position;
         float startTime = Time.time;
         float journeyTime = 1.0f;
