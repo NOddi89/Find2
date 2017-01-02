@@ -11,7 +11,6 @@ namespace Assets.Scripts.Tile
 
         public enum SpecialType
         {
-            Start,
             FirstPlayer,
             Blank
         }

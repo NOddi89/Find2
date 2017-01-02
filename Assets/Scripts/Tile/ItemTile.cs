@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class ItemTile : Tile
 {
-    private string m_name = "";
+    public Transform item;
+    public string placeName = "";
+    public bool isStartTile = false;
+
     private ItemType m_tileItemType;
 
     /// <summary>
@@ -17,6 +20,7 @@ public class ItemTile : Tile
         BuffItem,
         NerfItem,
         SpecialItem,
+        StartItem,
         TargetItem
     }
 
@@ -28,7 +32,31 @@ public class ItemTile : Tile
 
         //Other setting
         TileID = -1;
-        IsItemTile = true;
+        IsItemTile = true;      
+    }
+
+    public void Start()
+    {
+        if(IsStartTile)
+        {
+            SetColor(Color.red); 
+        }
+    }
+
+    public void SetColor(Color color)
+    {
+
+        m_tileItemType = ItemType.StartItem;
+
+        Transform[] childs = GetComponentsInChildren<Transform>();
+
+        foreach (Transform child in childs)
+        {
+            if (child.name == "Item")
+            {
+                child.GetComponent<MeshRenderer>().material.color = color;
+            }
+        }
 
     }
 
@@ -37,8 +65,8 @@ public class ItemTile : Tile
     /// </summary>
     public string Name
     {
-        get { return m_name; }
-        set { m_name = value; }
+        get { return placeName; }
+        set { placeName = value; }
     }
 
     /// <summary>
@@ -48,5 +76,13 @@ public class ItemTile : Tile
     {
         get { return m_tileItemType; }
         set { m_tileItemType = value; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public bool IsStartTile
+    {
+        get { return isStartTile; }
     }
 }

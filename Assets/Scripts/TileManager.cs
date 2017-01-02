@@ -8,6 +8,7 @@ public class TileManager : MonoBehaviour {
 
 	private Graph m_tileGraph = new Graph();
 	private int m_numOfAddedTiles = 0;
+    private List<ItemTile> m_playerStartingPoints = new List<ItemTile>();
 
 	// Use this for initialization
 	void Awake () 
@@ -15,6 +16,7 @@ public class TileManager : MonoBehaviour {
 		SetTileIDs();
 		AddTilesToGraph();
         AddNeighborsToTiles(m_tiles);
+        m_playerStartingPoints = FindStartingPoints();
 	}
 	
     /// <summary>
@@ -72,6 +74,30 @@ public class TileManager : MonoBehaviour {
             } 
         }
 	}
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    private List<ItemTile> FindStartingPoints()
+    {
+        List<ItemTile> results = new List<ItemTile>();
+
+        foreach(Tile tile in m_tiles)
+        {
+            if(tile.IsItemTile)
+            {
+                ItemTile itemTile = (ItemTile)tile;
+
+                if(itemTile.IsStartTile)
+                {
+                    results.Add(itemTile);
+                }
+            }
+        }
+
+        return results;
+    }
 	
     /// <summary>
     /// Returning a list of tiles id's that is clickable a number of steps away in every direction from
@@ -108,5 +134,14 @@ public class TileManager : MonoBehaviour {
         System.Int32.TryParse(tileId, out id);
 
         return m_tiles.GetChild(id - 1).GetComponent<Tile>();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public List<ItemTile> GetPlayerStartingPositions()
+    {
+        return m_playerStartingPoints;
     }
 }

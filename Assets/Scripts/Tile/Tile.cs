@@ -5,11 +5,10 @@ public class Tile : MonoBehaviour
 {
     public Transform[] neighborTiles;
 
-	protected Vector3 m_tilePlayerPos;
+    protected Vector3 m_tilePlayerPos;
 	protected Collider m_collider;
     private int m_tileId;
     private bool m_isItemTile;
-
 
 	public virtual void Awake()
 	{
@@ -20,7 +19,6 @@ public class Tile : MonoBehaviour
         //Other setting
         m_tileId = -1;
         m_isItemTile = false;
-
     }
 
     /// <summary>
