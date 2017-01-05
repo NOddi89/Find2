@@ -4,11 +4,7 @@ using UnityEngine;
 
 public class ItemTile : Tile
 {
-    public Transform item;
-    public string placeName = "";
-    public bool isStartTile = false;
-
-    private ItemType m_tileItemType;
+    #region Variables
 
     /// <summary>
     /// Enum used to set the type of item the tile consist of
@@ -23,6 +19,15 @@ public class ItemTile : Tile
         StartItem,
         TargetItem
     }
+
+    /// <summary>
+    /// Referance to the child transform that holds the item visible for the player
+    /// </summary>
+    public Transform item;
+    
+    #endregion
+
+    #region Monobehaviour
 
     override public void Awake()
     {
@@ -43,9 +48,16 @@ public class ItemTile : Tile
         }
     }
 
+    #endregion
+
+    #region Get/Set
+
+    /// <summary>
+    /// Set tje color of the tile
+    /// </summary>
+    /// <param name="color"></param>
     public void SetColor(Color color)
     {
-
         m_tileItemType = ItemType.StartItem;
 
         Transform[] childs = GetComponentsInChildren<Transform>();
@@ -60,18 +72,23 @@ public class ItemTile : Tile
 
     }
 
+    #endregion
+
+    #region Properties
     /// <summary>
     /// Property to holde the tiles name to display for the user
     /// </summary>
+    public string locationName;
     public string Name
     {
-        get { return placeName; }
-        set { placeName = value; }
+        get { return locationName; }
+        set { locationName = value; }
     }
 
     /// <summary>
     /// Item type of the tile
     /// </summary>
+    private ItemType m_tileItemType;
     public ItemType TileItemType
     {
         get { return m_tileItemType; }
@@ -79,10 +96,13 @@ public class ItemTile : Tile
     }
 
     /// <summary>
-    /// 
+    /// True if the tile is a starting tile
     /// </summary>
+    public bool isStartTile = false;
     public bool IsStartTile
     {
         get { return isStartTile; }
     }
+
+    #endregion
 }

@@ -3,14 +3,15 @@ using System.Collections;
 
 public class Tile : MonoBehaviour 
 {
-    public Transform[] neighborTiles;
+    #region Variables
 
-    protected Vector3 m_tilePlayerPos;
-	protected Collider m_collider;
-    private int m_tileId;
-    private bool m_isItemTile;
+    protected Collider m_collider;
 
-	public virtual void Awake()
+    #endregion
+
+    #region Monobehaviour
+
+    public virtual void Awake()
 	{
         // Calculate the player position
 		m_collider = GetComponentInChildren<Collider> ();
@@ -21,10 +22,15 @@ public class Tile : MonoBehaviour
         m_isItemTile = false;
     }
 
+    #endregion
+
+    #region Properties
+
     /// <summary>
     /// The tile ID number
     /// </summary>
-	public int TileID
+    private int m_tileId;
+    public int TileID
 	{
 		get{ return m_tileId; }
 		set{ m_tileId = value; }
@@ -34,7 +40,8 @@ public class Tile : MonoBehaviour
     /// The position where the player is supposed to stand
     /// </summary>
     /// <returns></returns>
-	public Vector3 TilePlayerPos
+    protected Vector3 m_tilePlayerPos;
+    public Vector3 TilePlayerPos
 	{
 		get { return m_tilePlayerPos; }
 	}
@@ -43,6 +50,7 @@ public class Tile : MonoBehaviour
     /// Array of neighbor tiles
     /// </summary>
     /// <returns></returns>
+    public Transform[] neighborTiles;
     public Transform[] NeighborTiles
     {
         get { return neighborTiles; }
@@ -52,10 +60,13 @@ public class Tile : MonoBehaviour
     /// Is the tile an item or a regular tile
     /// </summary>
     /// <returns></returns>
+    private bool m_isItemTile;
     public bool IsItemTile
     {
         get { return m_isItemTile; }
         set { m_isItemTile = value; }
     }
+
+    #endregion
 
 }

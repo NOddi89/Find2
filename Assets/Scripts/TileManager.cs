@@ -2,27 +2,35 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class TileManager : MonoBehaviour {
+public class TileManager : MonoBehaviour
+{
+    #region Variables
 
-	public Transform m_tiles;
+    public Transform m_tiles;
 
 	private Graph m_tileGraph = new Graph();
 	private int m_numOfAddedTiles = 0;
-    private List<ItemTile> m_playerStartingPoints = new List<ItemTile>();
 
-	// Use this for initialization
-	void Awake () 
+    #endregion
+
+    #region Monobehaviour
+
+    // Use this for initialization
+    void Awake () 
 	{
 		SetTileIDs();
 		AddTilesToGraph();
         AddNeighborsToTiles(m_tiles);
-        m_playerStartingPoints = FindStartingPoints();
 	}
-	
+
+    #endregion
+
+    #region Private Methods
+
     /// <summary>
     /// Goes through all tiles asign to m_tiles and setting a ID.
     /// </summary>
-	private void SetTileIDs()
+    private void SetTileIDs()
 	{
 		int id = 0;
 
@@ -48,7 +56,7 @@ public class TileManager : MonoBehaviour {
 		foreach(Transform transform in m_tiles)
 		{
 			Tile tile = transform.GetComponent<Tile>();
-            Debug.Log("Adding tile " + tile.TileID + " to graph");
+            //Debug.Log("Adding tile " + tile.TileID + " to graph");
 			m_tileGraph.AddNode(tile.TileID.ToString(), transform);
 
 		}
@@ -69,36 +77,16 @@ public class TileManager : MonoBehaviour {
             foreach(Transform t in neighbors)
             {
                 Tile neighbor = t.GetComponent<Tile>();
-                Debug.Log("Adding edge between " + tile.GetComponent<Tile>().TileID + " to " + neighbor.TileID);
+                //Debug.Log("Adding edge between " + tile.GetComponent<Tile>().TileID + " to " + neighbor.TileID);
                 m_tileGraph.AddUndirectedEdge(tile.GetComponent<Tile>().TileID.ToString(), neighbor.TileID.ToString());
             } 
         }
 	}
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    private List<ItemTile> FindStartingPoints()
-    {
-        List<ItemTile> results = new List<ItemTile>();
+    #endregion
 
-        foreach(Tile tile in m_tiles)
-        {
-            if(tile.IsItemTile)
-            {
-                ItemTile itemTile = (ItemTile)tile;
+    #region Public Methods
 
-                if(itemTile.IsStartTile)
-                {
-                    results.Add(itemTile);
-                }
-            }
-        }
-
-        return results;
-    }
-	
     /// <summary>
     /// Returning a list of tiles id's that is clickable a number of steps away in every direction from
     /// where the player is standing.
@@ -106,7 +94,7 @@ public class TileManager : MonoBehaviour {
     /// <param name="fromTile"></param>
     /// <param name="steps"></param>
     /// <returns></returns>
-	public List<string> GetAllValidTilesWithinNoOfStepsFromTile(Tile fromTile, int steps)
+    public List<string> GetAllValidTilesWithinNoOfStepsFromTile(Tile fromTile, int steps)
 	{
 		return m_tileGraph.GetTileIDsNumOfStepFromNode(m_tileGraph.Nodes[fromTile.TileID.ToString()], steps);
 	}
@@ -136,12 +124,5 @@ public class TileManager : MonoBehaviour {
         return m_tiles.GetChild(id - 1).GetComponent<Tile>();
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    public List<ItemTile> GetPlayerStartingPositions()
-    {
-        return m_playerStartingPoints;
-    }
+    #endregion
 }
