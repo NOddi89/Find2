@@ -5,67 +5,52 @@ using System.Collections.Generic;
 public class PlayerMovement : MonoBehaviour
 {
     #region Variables
-    public Transform m_SpawnPoint;
+    
 	public float m_Speed = 3f;
-	public Transform m_TileManager;
-	public int m_steps = 1;
-
-	private Transform m_Transform;
-	private bool m_isMoveing;  
+	
+	private Transform m_transform;
+	 
 	private Tile m_currentTile;
-	private TileManager m_tileManagerScript;
-	private bool m_hasValidTiles;
-	private List<string> m_validTileIDs;
+	private TileManager m_tileManager;
+	private bool m_hasValidTiles = false;
+    private List<string> m_validTileIDs;
+
+    #endregion
+
+    #region Events
+
+    public delegate void MoveDone();
+    public static event MoveDone OnMoveDone;
+
     #endregion
 
     #region Monobehaviour
 
     void Awake()
 	{
-		m_Transform = GetComponent<Transform> ();
-		m_isMoveing = false;
-        m_canMove = false;
-		m_hasValidTiles = false;
-		m_tileManagerScript = m_TileManager.GetComponent<TileManager>();
+		m_transform = GetComponent<Transform> ();
+        m_tileManager = GameObject.FindGameObjectWithTag("TileManager").GetComponent<TileManager>();
 	}
 
 	void Start () 
 	{
-		m_currentTile = m_SpawnPoint.GetComponent<Tile>();
-		transform.position = m_currentTile.TilePlayerPos;
+		
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		if(m_canMove)
-        {
-            if (!m_hasValidTiles)
+		if(m_canMove && m_hasValidTiles)
+        {      
+            if (Input.GetButtonDown("Fire1") && !m_isMoveing)
             {
-                m_validTileIDs = m_tileManagerScript.GetAllValidTilesWithinNoOfStepsFromTile(m_currentTile, m_steps);
-                m_hasValidTiles = true;
-            }
-            else
-            {
-                if (Input.GetButtonDown("Fire1") && !m_isMoveing)
+                Tile newDestination = GetNewDestinationTile();
+
+                if (newDestination != null && m_validTileIDs.Contains(newDestination.TileID.ToString()))
                 {
-                    Tile newDestination = GetNewDestinationTile();
-                    //Debug.Log("New destination is tile: " + newDestination.TileID + " and it is " + (m_validTileIDs.Contains(newDestination.TileID.ToString()) ? " valid." : "not valid."));
-
-                    if (newDestination != null && m_validTileIDs.Contains(newDestination.TileID.ToString()))
-                    {
-                        //Debug.Log("Path to tile is: ");
-                        List<string> path = m_tileManagerScript.GetPathBetweenTiles(m_currentTile, newDestination);
-                        //string output = "";
-                        //foreach (string s in path)
-                        //{
-                        //    output += (s + ", ");
-                        //}
-                        //Debug.Log(output);
-
-                        StartCoroutine(walkPath(path));
-                    }
-                }
+                    List<string> path = m_tileManager.GetPathBetweenTiles(m_currentTile, newDestination);
+                    StartCoroutine(walkPath(path));
+                } 
             }
         }	
 	}
@@ -93,13 +78,18 @@ public class PlayerMovement : MonoBehaviour
 	}
 
     /// <summary>
-    /// 
+    /// Find all tiles that the player can go to from the current tile
+    /// to all tiles a number of steps away. If there is one or more
+    /// valid tile the m_hasValidTiles is true
     /// </summary>
-    private void NewRandomStep()
+    private void FindValidTiles()
     {
-        m_steps = Random.Range(1, 7);
-        Debug.Log("Steps: " + m_steps);
-        m_hasValidTiles = false;
+        m_validTileIDs = m_tileManager.GetAllValidTilesWithinNoOfStepsFromTile(m_currentTile, m_steps);
+
+        if(m_validTileIDs.Count > 0)
+        {
+            m_hasValidTiles = true;
+        }
     }
 
     #endregion
@@ -150,7 +140,7 @@ public class PlayerMovement : MonoBehaviour
 
         while (!destinationReached)
         {
-            Tile destination = m_TileManager.GetComponent<TileManager>().GetTile(path[index]);
+            Tile destination = m_tileManager.GetTile(path[index]);
             yield return StartCoroutine(moveToTile(destination));
 
             index++;
@@ -164,17 +154,68 @@ public class PlayerMovement : MonoBehaviour
         }
 
         m_isMoveing = false;
-
-        NewRandomStep();
+        
+        if(OnMoveDone != null)
+        {
+            OnMoveDone();
+        }
     }
     #endregion
 
     #region Properties
-    private bool m_canMove;
+    private bool m_canMove = false;
     public bool CanMove
     {
         get { return m_canMove; }
-        set { m_canMove = value; }
+        set
+        {
+            m_canMove = value;
+
+            if(!m_canMove)
+            {
+                m_hasValidTiles = false;
+                m_canSelectTile = false;
+                m_steps = -1;
+            }
+        }
     }
+
+    private bool m_isMoveing = false;
+    public bool IsMoveing
+    {
+        get { return m_isMoveing; }
+        set { m_isMoveing = value; }
+    }
+
+    private bool m_canSelectTile;
+    public bool CanSelectTile
+    {
+        get { return m_canSelectTile; }
+        set { m_canSelectTile = value; }
+    }
+
+    private int m_steps = -1;
+    public int Steps
+    {
+        get { return m_steps; }
+        set
+        {
+            m_steps = value;
+            FindValidTiles();
+        }
+    }
+
+    private Transform m_spawnPoint;
+    public Transform SpawnPoint
+    {
+        get { return m_spawnPoint; }
+        set
+        {
+            m_spawnPoint = value;
+            m_currentTile = m_spawnPoint.GetComponent<Tile>();
+            m_transform.position = m_currentTile.TilePlayerPos;
+        }
+    }
+
     #endregion
 }

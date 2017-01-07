@@ -21,8 +21,7 @@ public class GameManager : MonoBehaviour
     public static GameState gameState;
 
     private TileManager m_tileManager;
-    private List<ItemTile> m_playerStartingPositions;
-    private Player m_currentPlayer;
+    
 
     #endregion
 
@@ -31,7 +30,6 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         m_tileManager = tileManager.GetComponent<TileManager>();
-        m_playerStartingPositions = m_tileManager.GetPlayerStartingPositions();
 
         int id = 1;
 
@@ -45,14 +43,17 @@ public class GameManager : MonoBehaviour
 
         // First player can select starting tile
         m_currentPlayer = FirstPlayer();
-        gameState = GameState.ChooseStartTile;
+        gameState = GameState.ChooseStartTile;       
     }
 
     private void Update()
     {
         if(gameState == GameState.ChooseStartTile)
         {
-            
+            if(!selectStartTileCanvas.gameObject.activeSelf)
+            {
+                selectStartTileCanvas.gameObject.SetActive(true);
+            }
         }
         else if(gameState == GameState.StartGame)
         {
@@ -75,6 +76,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        PlayerMovement.OnMoveDone += PlayerMovementDone;
+    }
+
+    private void OnDisable()
+    {
+        PlayerMovement.OnMoveDone -= PlayerMovementDone;
+    }
+
     #endregion
 
     #region Private methods
@@ -86,8 +97,6 @@ public class GameManager : MonoBehaviour
     private void NextPlayer()
     {
         m_currentPlayer.PlayerActive = false;
-
-        //Debug.Log("Going to next player. Current player id is " + m_currentPlayer.PlayerId);
 
         if(m_currentPlayer.PlayerId < players.Length)
         {
@@ -107,6 +116,14 @@ public class GameManager : MonoBehaviour
     private Player FirstPlayer()
     {
         return players[0].GetComponent<Player>();
+    }
+
+    /// <summary>
+    /// Call when the event OnMoveDone is raised from PlayerMovement
+    /// </summary>
+    private void PlayerMovementDone()
+    {
+        NextPlayer();
     }
 
     #endregion
@@ -143,6 +160,17 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError(String.Format("Tile {0} is not a start tile", tile.TileID));
         } 
+    }
+
+    #endregion
+
+    #region Properties
+
+    private Player m_currentPlayer;
+    public Player CurrentPlayer
+    {
+        get { return m_currentPlayer; }
+        set { m_currentPlayer = value; }
     }
 
     #endregion
