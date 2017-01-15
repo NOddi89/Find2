@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
 
     public Transform tileManager;
     public Canvas selectStartTileCanvas;
+    public Canvas userInterface;
     public Transform[] players;
     public static GameState gameState;
 
