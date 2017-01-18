@@ -114,5 +114,12 @@ public class Player : MonoBehaviour
         }
     }
 
+    private int m_moneyBalance = 0;
+    public int MoneyBalance
+    {
+        get { return m_moneyBalance; }
+        set { m_moneyBalance = value; }
+    }
+
     #endregion
 }

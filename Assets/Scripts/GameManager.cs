@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     public static GameState gameState;
 
     private TileManager m_tileManager;
+    private Bank m_bank;
     
 
     #endregion
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         m_tileManager = tileManager.GetComponent<TileManager>();
+        m_bank = new Bank(200, 100);
 
         int id = 1;
 
@@ -40,6 +42,8 @@ public class GameManager : MonoBehaviour
 
             player.PlayerId = id;
             id++;
+
+            player.MoneyBalance = m_bank.GetPlayerStartCapital();
         }
 
         // First player can select starting tile
