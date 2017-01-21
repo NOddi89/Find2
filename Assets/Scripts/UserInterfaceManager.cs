@@ -30,8 +30,8 @@ public class UserInterfaceManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-		
-	}
+
+    }
 
     public void ShowVrGoogleImage()
     {
@@ -53,6 +53,46 @@ public class UserInterfaceManager : MonoBehaviour
         giftCardImage.gameObject.SetActive(false);
     }
 
+    public void ShowRoundNumberText()
+    {
+        roundNumberText.gameObject.SetActive(true);
+    }
+
+    public void HideRoundNumberText()
+    {
+        roundNumberText.gameObject.SetActive(false);
+    }
+
+    public void ShowCurrentPlayerText()
+    {
+        currentPlayerText.gameObject.SetActive(true);
+    }
+
+    public void HideCurrentPlayerText()
+    {
+        currentPlayerText.gameObject.SetActive(false);
+    }
+
+    public void ShowCurrentPlayerMoneyBalance()
+    {
+        currentPlayerMoneyBalanceText.gameObject.SetActive(true);
+    }
+
+    public void HideCurrentPlayerMoneyBalance()
+    {
+        currentPlayerMoneyBalanceText.gameObject.SetActive(false);
+    }
+
+    public void ShowInfoText()
+    {
+        infoText.gameObject.SetActive(true);
+    }
+
+    public void HideInfoText()
+    {
+        infoText.gameObject.SetActive(false);
+    }
+
     public void IncrementRoundNumber()
     {
         m_roundNumber++;
@@ -71,7 +111,7 @@ public class UserInterfaceManager : MonoBehaviour
 
     public void SetCurrentPlayerMoneyBalance(int amountOfMoney)
     {
-        currentPlayerText.text = amountOfMoney + "$";
+        currentPlayerMoneyBalanceText.text = amountOfMoney + "$";
     }
 
 }

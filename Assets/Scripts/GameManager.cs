@@ -22,8 +22,9 @@ public class GameManager : MonoBehaviour
     public static GameState gameState;
 
     private TileManager m_tileManager;
+    private UserInterfaceManager m_userInterfaceManager;
     private Bank m_bank;
-    
+    private int m_roundNumber = 0;
 
     #endregion
 
@@ -32,6 +33,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         m_tileManager = tileManager.GetComponent<TileManager>();
+        m_userInterfaceManager = userInterface.GetComponent<UserInterfaceManager>();
         m_bank = new Bank(200, 100);
 
         int id = 1;
@@ -58,11 +60,24 @@ public class GameManager : MonoBehaviour
             if(!selectStartTileCanvas.gameObject.activeSelf)
             {
                 selectStartTileCanvas.gameObject.SetActive(true);
+
+                // Start info
+                m_userInterfaceManager.SetInfoText("Select start location");
+                m_userInterfaceManager.ShowInfoText();
             }
         }
         else if(gameState == GameState.StartGame)
         {
             selectStartTileCanvas.gameObject.SetActive(false);
+            m_userInterfaceManager.HideInfoText();
+
+            // Round number one
+            NextRound();
+            m_userInterfaceManager.ShowRoundNumberText();
+
+            // Activating palyer info
+            m_userInterfaceManager.ShowCurrentPlayerMoneyBalance();
+            m_userInterfaceManager.ShowCurrentPlayerText();
 
             // Selecting a player to start
             m_currentPlayer = FirstPlayer();
@@ -73,6 +88,7 @@ public class GameManager : MonoBehaviour
             if(!m_currentPlayer.PlayerActive)
             {
                 m_currentPlayer.PlayerActive = true;
+                ActivateCurrentPlayerUi();
             }
         }
         else if(gameState == GameState.EndGame)
@@ -106,11 +122,11 @@ public class GameManager : MonoBehaviour
         if(m_currentPlayer.PlayerId < players.Length)
         {
             m_currentPlayer = players[m_currentPlayer.PlayerId].GetComponent<Player>();
-            m_currentPlayer.PlayerActive = true;
         }
         else
         {
             m_currentPlayer = FirstPlayer();
+            NextRound();
         }
     }
 
@@ -131,6 +147,18 @@ public class GameManager : MonoBehaviour
         NextPlayer();
     }
 
+    private void ActivateCurrentPlayerUi()
+    {
+        m_userInterfaceManager.SetCurrentPlayerText(m_currentPlayer.name);
+        m_userInterfaceManager.SetCurrentPlayerMoneyBalance(m_currentPlayer.MoneyBalance);
+    }
+
+    private void NextRound()
+    {
+        m_roundNumber++;
+        m_userInterfaceManager.IncrementRoundNumber();
+    }
+
     #endregion
 
     #region Public methods
@@ -141,8 +169,6 @@ public class GameManager : MonoBehaviour
     /// <param name="startTile"></param>
     public void SetStartTileCurrentPlayer(Transform startTile)
     {
-        //Debug.Log("Set start tile for player " + m_currentPlayer.PlayerId);
-
         ItemTile tile = startTile.GetComponent<ItemTile>();
 
         // A check to see that the tile selected as start tile on the button is a valid start tile.
@@ -154,7 +180,6 @@ public class GameManager : MonoBehaviour
             if (m_currentPlayer.PlayerId == players.Length)
             {
                 gameState = GameState.StartGame;
-                Debug.Log("Start game!");
             }
             else
             {
