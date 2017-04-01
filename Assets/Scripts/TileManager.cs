@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -10,6 +11,8 @@ public class TileManager : MonoBehaviour
 
 	private Graph m_tileGraph = new Graph();
 	private int m_numOfAddedTiles = 0;
+    private int m_numOfAddedItemTiles = 0;
+    private List<Transform> m_itemTiles = new List<Transform>();
 
     #endregion
 
@@ -21,7 +24,13 @@ public class TileManager : MonoBehaviour
 		SetTileIDs();
 		AddTilesToGraph();
         AddNeighborsToTiles(m_tiles);
-	}
+        AddItemTileTypes();
+    }
+
+    private void Start()
+    {
+        
+    }
 
     #endregion
 
@@ -56,8 +65,19 @@ public class TileManager : MonoBehaviour
 		foreach(Transform transform in m_tiles)
 		{
 			Tile tile = transform.GetComponent<Tile>();
-            //Debug.Log("Adding tile " + tile.TileID + " to graph");
 			m_tileGraph.AddNode(tile.TileID.ToString(), transform);
+
+            if(tile.IsItemTile)
+            {
+                ItemTile itemTile = (ItemTile)tile;
+
+                if (!itemTile.isStartTile)
+                {
+                    m_itemTiles.Add(transform);
+                    m_numOfAddedItemTiles++;
+                }
+                
+            }
 
 		}
 	}
@@ -82,6 +102,72 @@ public class TileManager : MonoBehaviour
             } 
         }
 	}
+
+    /// <summary>
+    /// TODO
+    /// </summary>
+    private void AddItemTileTypes()
+    {
+        //Debug.Log("No. item tiles = " + m_numOfAddedItemTiles);
+
+        // Create item deployment minus one of the total of item tiles. That one is used for the vr googles
+        ItemTileDeployment itemTileDeployment = new ItemTileDeployment(m_numOfAddedItemTiles - 1); 
+
+        List<int> itemTileIDs = new List<int>();      
+
+        // Get all item tile id's
+        foreach (Transform t in m_itemTiles)
+        {
+            Tile tile = t.GetComponent<Tile>();
+            itemTileIDs.Add(tile.TileID);
+        }
+
+        // Shuffle the id's so items is not added at the same tiles each game
+        System.Random rnd = new System.Random();
+        itemTileIDs.Shuffle(rnd);
+
+        int currentItemIdIndex = 0;
+        int numOfItems = itemTileDeployment.MoneyItemDeployment.Count;
+
+        foreach (KeyValuePair<string, int> kvp in itemTileDeployment.MoneyItemDeployment)
+        {
+            int moneyValue;
+            Int32.TryParse(kvp.Key, out moneyValue);
+
+            for (int i = 0; i < kvp.Value; i++)
+            {
+                //Transform t = m_tiles.GetChild(itemTileIDs[currentItemIdIndex]);
+                Tile tile = GetTile(itemTileIDs[currentItemIdIndex].ToString());
+
+                if (tile.IsItemTile)
+                {
+                    ItemTile itemTile = tile.GetComponent<ItemTile>();
+                    MoneyItemTile moneyItemTile = tile.gameObject.AddComponent<MoneyItemTile>();
+                    moneyItemTile.TranferItemData(itemTile);
+                    moneyItemTile.Value = kvp.Value;
+                    Debug.Log("TileID: " + moneyItemTile.TileID);
+                    Destroy(itemTile);
+                }
+
+                currentItemIdIndex++;
+            }        
+        }
+
+
+        // Legge til en synlig tile slik at man kan se om en tile er tatt eller ikke
+
+
+        //Transform test = m_itemTiles[0];
+        //ItemTile itemTile = test.GetComponent<ItemTile>();
+
+        //Debug.Log("TileID: " + itemTile.TileID);
+
+        //MoneyItemTile moneyItemTile = test.gameObject.AddComponent<MoneyItemTile>();
+        //moneyItemTile.TranferItemData(itemTile);
+        //moneyItemTile.Value = 100;
+
+        //Destroy(itemTile);
+    }
 
     #endregion
 

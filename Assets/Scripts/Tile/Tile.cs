@@ -29,7 +29,7 @@ public class Tile : MonoBehaviour
     /// <summary>
     /// The tile ID number
     /// </summary>
-    private int m_tileId;
+    public int m_tileId;
     public int TileID
 	{
 		get{ return m_tileId; }
@@ -44,6 +44,7 @@ public class Tile : MonoBehaviour
     public Vector3 TilePlayerPos
 	{
 		get { return m_tilePlayerPos; }
+        set { m_tilePlayerPos = value; }
 	}
 
     /// <summary>
@@ -54,6 +55,7 @@ public class Tile : MonoBehaviour
     public Transform[] NeighborTiles
     {
         get { return neighborTiles; }
+        set { neighborTiles = value; }
     }
 
     /// <summary>

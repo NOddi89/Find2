@@ -42,9 +42,13 @@ public class ItemTile : Tile
 
     public void Start()
     {
-        if(IsStartTile)
+        if (IsStartTile)
         {
-            SetColor(Color.red); 
+            SetColor(Color.red);
+        }
+        else
+        {
+            SetColor(Color.blue);
         }
     }
 
@@ -102,6 +106,7 @@ public class ItemTile : Tile
     public bool IsStartTile
     {
         get { return isStartTile; }
+        set { isStartTile = value; }
     }
 
     #endregion
