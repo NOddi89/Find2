@@ -3,22 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Assets.Scripts.Tile
+
+public class NerfItemTile : ItemTile, ITransferableItem
 {
-    class NerfItemTile : ItemTile
+    public enum NerfType
     {
-        private NerfType m_nerfTypeValue;
-
-        public enum NerfType
-        {
-            OneStep,
-            Theif
-        }
-
-        public NerfType NerfTypeValue
-        {
-            get { return m_nerfTypeValue; }
-            set { m_nerfTypeValue = value; }
-        }
+        OneStep,
+        Theif
     }
+
+    public void TranferItemData(ItemTile itemTile)
+    {
+        throw new NotImplementedException();
+    }
+
+    private NerfType m_nerfTypeValue;
+    public NerfType NerfTypeValue
+    {
+        get { return m_nerfTypeValue; }
+        set { m_nerfTypeValue = value; }
+    }
+
 }
+

@@ -3,22 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Assets.Scripts.Tile
+
+public class SpecialItemTile : ItemTile, ITransferableItem
 {
-    class SpecialItemTile : ItemTile
+    
+    public enum SpecialType
     {
-        private SpecialType m_specialTypeValue;
+        FirstPlayer,
+        Blank
+    }
 
-        public enum SpecialType
-        {
-            FirstPlayer,
-            Blank
-        }
+    public void TranferItemData(ItemTile itemTile)
+    {
+        throw new NotImplementedException();
+    }
 
-        public SpecialType SpecialTypeValue
-        {
-            get { return m_specialTypeValue; }
-            set { m_specialTypeValue = value; }
-        }
+    private SpecialType m_specialTypeValue;
+    public SpecialType SpecialTypeValue
+    {
+        get { return m_specialTypeValue; }
+        set { m_specialTypeValue = value; }
     }
 }
