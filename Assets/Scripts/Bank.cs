@@ -1,15 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using System;
 
-public class Bank
+public class Bank : MonoBehaviour
 {
-    private int m_playerStartCapital;
-    private int m_totalMoney;
+    public int playerStartCapital;
+    public int totalMoney;
 
-    public Bank(int bankVaultTotal, int playerStartCapital)
+    private GameManager m_gameManager;
+
+    public void Awake()
     {
-        m_totalMoney = bankVaultTotal;
-        m_playerStartCapital = playerStartCapital;
+        m_gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
     }
 
     /// <summary>
@@ -18,17 +21,37 @@ public class Bank
     /// </summary>
     /// <param name="value"></param>
     /// <returns>-1 if there is no more money in the bank</returns>
-    public int Withdraw(int value)
+    public int WithdrawMoney(int value)
     {
         int withdraw = -1;
 
-        if((m_totalMoney - value) >= 0)
+        if((totalMoney - value) >= 0)
         {
             withdraw = value;
-            m_totalMoney -= withdraw;
+            totalMoney -= withdraw;
+            m_gameManager.CurrentPlayer.MoneyBalance += withdraw;
         }
 
         return withdraw;
+    }
+
+    /// <summary>
+    /// Deposit money into the bank
+    /// </summary>
+    /// <param name="deposit"></param>
+    /// <returns></returns>
+    public bool DepositMoney(int deposit)
+    {
+        bool transactionOk = false;
+
+        if(deposit > 0)
+        {
+            totalMoney += deposit;
+            m_gameManager.CurrentPlayer.MoneyBalance -= deposit;
+            transactionOk = true;
+        }
+
+        return transactionOk;
     }
 
     /// <summary>
@@ -39,11 +62,11 @@ public class Bank
     {
         int capital = -1;
 
-        if(m_totalMoney - m_playerStartCapital >= 0)
+        if(totalMoney - playerStartCapital >= 0)
         {
-            capital = m_playerStartCapital;
-            m_totalMoney -= capital;
+            capital = playerStartCapital;
+            totalMoney -= capital;
         }
-        return m_playerStartCapital;
+        return playerStartCapital;
     }
 }
