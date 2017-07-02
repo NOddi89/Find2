@@ -20,6 +20,7 @@ public class MoneyItemTile : ItemTile, ITransferableItem
         this.locationName = itemTile.locationName;
         this.TileItemType = ItemTile.ItemType.MoneyItem;
         this.IsStartTile = false;
+        this.HasItem = itemTile.HasItem;
     }
 
     private int m_value;

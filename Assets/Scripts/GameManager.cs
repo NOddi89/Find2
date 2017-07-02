@@ -23,7 +23,6 @@ public class GameManager : MonoBehaviour
 
     private TileManager m_tileManager;
     private UserInterfaceManager m_userInterfaceManager;
-    private Bank m_bank;
     private int m_roundNumber = 0;
 
     #endregion
@@ -34,7 +33,7 @@ public class GameManager : MonoBehaviour
     {
         m_tileManager = tileManager.GetComponent<TileManager>();
         m_userInterfaceManager = userInterface.GetComponent<UserInterfaceManager>();
-        m_bank = new Bank(200, 100);
+        m_bank = GameObject.FindGameObjectWithTag("Bank").GetComponent<Bank>();
 
         int id = 1;
 
@@ -85,7 +84,7 @@ public class GameManager : MonoBehaviour
         }
         else if(gameState == GameState.Running)
         {
-            if(!m_currentPlayer.PlayerActive)
+            if (!m_currentPlayer.PlayerActive)
             {
                 m_currentPlayer.PlayerActive = true;
                 ActivateCurrentPlayerUi();
@@ -99,12 +98,12 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerMovement.OnMoveDone += PlayerMovementDone;
+        Player.OnPlayerDone += PlayerDone;
     }
 
     private void OnDisable()
     {
-        PlayerMovement.OnMoveDone -= PlayerMovementDone;
+        Player.OnPlayerDone -= PlayerDone;
     }
 
     #endregion
@@ -142,17 +141,23 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Call when the event OnMoveDone is raised from PlayerMovement
     /// </summary>
-    private void PlayerMovementDone()
+    private void PlayerDone()
     {
         NextPlayer();
     }
 
+    /// <summary>
+    /// Setting name and currency for the current player visible on the ui
+    /// </summary>
     private void ActivateCurrentPlayerUi()
     {
         m_userInterfaceManager.SetCurrentPlayerText(m_currentPlayer.name);
         m_userInterfaceManager.SetCurrentPlayerMoneyBalance(m_currentPlayer.MoneyBalance);
     }
 
+    /// <summary>
+    /// Go to the next round. Increment round number and update text on ui
+    /// </summary>
     private void NextRound()
     {
         m_roundNumber++;
@@ -188,7 +193,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError(String.Format("Tile {0} is not a start tile", tile.TileID));
+            //Debug.LogError(String.Format("Tile {0} is not a start tile", tile.TileID));
         } 
     }
 
@@ -201,6 +206,12 @@ public class GameManager : MonoBehaviour
     {
         get { return m_currentPlayer; }
         set { m_currentPlayer = value; }
+    }
+
+    private Bank m_bank;
+    public Bank Bank
+    {
+        get { return m_bank; }
     }
 
     #endregion

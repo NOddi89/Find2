@@ -57,12 +57,12 @@ public class ItemTile : Tile
     #region Get/Set
 
     /// <summary>
-    /// Set tje color of the tile
+    /// Set the color of the tile
     /// </summary>
     /// <param name="color"></param>
     public void SetColor(Color color)
     {
-        m_tileItemType = ItemType.StartItem;
+        //m_tileItemType = ItemType.StartItem;
 
         Transform[] childs = GetComponentsInChildren<Transform>();
 
@@ -73,7 +73,6 @@ public class ItemTile : Tile
                 child.GetComponent<MeshRenderer>().material.color = color;
             }
         }
-
     }
 
     #endregion
@@ -102,11 +101,31 @@ public class ItemTile : Tile
     /// <summary>
     /// True if the tile is a starting tile
     /// </summary>
-    public bool isStartTile = false;
+    public bool m_isStartTile = false;
     public bool IsStartTile
     {
-        get { return isStartTile; }
-        set { isStartTile = value; }
+        get { return m_isStartTile; }
+        set { m_isStartTile = value; }
+    }
+
+    /// <summary>
+    /// What is cost to buy the tile
+    /// </summary>
+    private int m_tilePrize = 300;
+    public int TilePrize
+    {
+        get { return m_tilePrize; }
+        set { m_tilePrize = value; }
+    }
+
+    /// <summary>
+    /// Does the item have the item, or is it already taken
+    /// </summary>
+    public bool m_hasItem = false;
+    public bool HasItem
+    {
+        get { return m_hasItem; }
+        set { m_hasItem = value; }
     }
 
     #endregion

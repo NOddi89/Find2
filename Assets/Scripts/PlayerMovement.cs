@@ -8,9 +8,7 @@ public class PlayerMovement : MonoBehaviour
     
 	public float m_Speed = 3f;
 	
-	private Transform m_transform;
-	 
-	private Tile m_currentTile;
+	private Transform m_transform;	 
 	private TileManager m_tileManager;
 	private bool m_hasValidTiles = false;
     private List<string> m_validTileIDs;
@@ -20,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
     #region Events
 
     public delegate void MoveDone();
-    public static event MoveDone OnMoveDone;
+    public static event MoveDone MovementDone;
 
     #endregion
 
@@ -30,11 +28,6 @@ public class PlayerMovement : MonoBehaviour
 	{
 		m_transform = GetComponent<Transform> ();
         m_tileManager = GameObject.FindGameObjectWithTag("TileManager").GetComponent<TileManager>();
-	}
-
-	void Start () 
-	{
-		
 	}
 	
 	// Update is called once per frame
@@ -155,11 +148,12 @@ public class PlayerMovement : MonoBehaviour
 
         m_isMoveing = false;
         
-        if(OnMoveDone != null)
+        if(MovementDone != null)
         {
-            OnMoveDone();
+            MovementDone();
         }
     }
+
     #endregion
 
     #region Properties
@@ -214,6 +208,27 @@ public class PlayerMovement : MonoBehaviour
             m_spawnPoint = value;
             m_currentTile = m_spawnPoint.GetComponent<Tile>();
             m_transform.position = m_currentTile.TilePlayerPos;
+        }
+    }
+
+    private Tile m_currentTile;
+    public Tile CurrentTile
+    {
+        get { return m_currentTile; }
+    }
+
+    public ItemTile CurrentItemTile
+    {
+        get
+        {
+            ItemTile itemTile = null;
+
+            if(m_currentTile.IsItemTile)
+            {
+                itemTile = (ItemTile)m_currentTile;
+            }
+
+            return itemTile;
         }
     }
 

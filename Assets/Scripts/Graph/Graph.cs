@@ -286,7 +286,7 @@ public class Graph
 			output += (visitedIds[i] + "(" + distance[visitedIds[i]] + ")" +  (i < (visitedIds.Length - 1) ? ", " : ""));
 		}
 
-		Debug.Log(output);
+		//Debug.Log(output);
 
 		return visited.ToList();
 	}

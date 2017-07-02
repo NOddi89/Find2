@@ -71,14 +71,13 @@ public class TileManager : MonoBehaviour
             {
                 ItemTile itemTile = (ItemTile)tile;
 
-                if (!itemTile.isStartTile)
+                if (!itemTile.IsStartTile)
                 {
+                    itemTile.HasItem = true;
                     m_itemTiles.Add(transform);
                     m_numOfAddedItemTiles++;
-                }
-                
+                }  
             }
-
 		}
 	}
 
@@ -144,29 +143,15 @@ public class TileManager : MonoBehaviour
                     ItemTile itemTile = tile.GetComponent<ItemTile>();
                     MoneyItemTile moneyItemTile = tile.gameObject.AddComponent<MoneyItemTile>();
                     moneyItemTile.TranferItemData(itemTile);
-                    moneyItemTile.Value = kvp.Value;
-                    Debug.Log("TileID: " + moneyItemTile.TileID);
+                    moneyItemTile.Value = moneyValue;
+                    moneyItemTile.TilePrize = moneyItemTile.Value;
+                    //Debug.Log("TileID: " + moneyItemTile.TileID);
                     Destroy(itemTile);
                 }
 
                 currentItemIdIndex++;
             }        
         }
-
-
-        // Legge til en synlig tile slik at man kan se om en tile er tatt eller ikke
-
-
-        //Transform test = m_itemTiles[0];
-        //ItemTile itemTile = test.GetComponent<ItemTile>();
-
-        //Debug.Log("TileID: " + itemTile.TileID);
-
-        //MoneyItemTile moneyItemTile = test.gameObject.AddComponent<MoneyItemTile>();
-        //moneyItemTile.TranferItemData(itemTile);
-        //moneyItemTile.Value = 100;
-
-        //Destroy(itemTile);
     }
 
     #endregion
